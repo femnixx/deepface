@@ -8,7 +8,7 @@ if not cap.isOpened():
     print("Error: Could not open webcam")
     exit()
 
-print("Webcam opened. Press 'q' to quit")
+print("Webcam opened. Press 'q' to quit.")
 
 AUTHORIZED_DIR = "authorized_faces"
 SUSPICIOUS_EMOTIONS= ['angry', 'fear', 'disgust']
