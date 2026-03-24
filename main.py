@@ -9,6 +9,8 @@ if not cap.isOpened():
 
 print("Webcam opened. Press 'q' to quit")
 
+
+
 while True: 
     ret, frame = cap.read()
 
