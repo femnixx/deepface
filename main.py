@@ -16,9 +16,9 @@ SUSPICIOUS_EMOTIONS= ['angry', 'fear', 'disgust']
 def is_authorized(frame):
     try: 
         results = DeepFace.find(
-            img_path=frame
-            db_path=AUTHORIZED_DIR
-            enforce_detection=False
+            img_path=frame,
+            db_path=AUTHORIZED_DIR,
+            enforce_detection=False,
             silent=True
         )
         if len(results) > 0 and len(results[0]) >0:
