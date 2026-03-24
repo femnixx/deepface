@@ -1,11 +1,16 @@
 import cv2
 from deepface import DeepFace
 import os
+from datetime import datetime
 
 cap = cv2.VideoCapture(0)
+INCIDENTS_DIR = "incidents"
 frame_count = 0
 ANALYZE_EVERY = 10
 last_result = None
+
+last_saved = 0
+SAVE_COOLDOWN = 10
 
 if not cap.isOpened():
     print("Error: Could not open webcam")
@@ -15,6 +20,14 @@ print("Webcam opened. Press 'q' to quit.")
 
 AUTHORIZED_DIR = "authorized_faces"
 SUSPICIOUS_EMOTIONS= ['angry', 'fear', 'disgust']
+
+os.makedirs(INCIDENTS_DIR, exist_ok=True)
+
+def save_incident(frame, label): 
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"{INCIDENTS_DIR}/{timestamp}_{label}.jpg"
+    cv2.imwrite(filename, frame)
+    print(f"Incident saved: {filename}")
 
 def is_authorized(frame):
     try: 
@@ -61,6 +74,12 @@ while True:
             else: 
                 color = (0, 0, 255)
                 label = "INTRUDER DETECTED"
+                save_incident(frame, label)
+                
+                now = datetime.now().timestamp()
+                if now - last_saved > SAVE_COOLDOWN:
+                    save_incident(frame, "INTRDUER")
+                    last_saved = now
             
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
             cv2.putText(frame, label, (x, y - 10),
@@ -71,11 +90,11 @@ while True:
 
         if last_result: 
             pass
-        
+
         cv2.imshow("Deepface - Camera Feed", frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
+            
 cap.release()
 cv2.destroyAllWindows()
